@@ -73,6 +73,7 @@ def main():
     # Evaluate the initial model
     metrics = server.evaluate()
     metrics["communication_round"] = 0
+    metrics["lr"] = clients[0].optimizer.param_groups[0]["lr"]
     s = "[0]"
     if "val_key_score_avg" in metrics:
         s += f" val_key_score_avg: {metrics['val_key_score_avg']:.4f}, val_loss_avg: {metrics['val_loss_avg']:.4f}"
@@ -92,6 +93,7 @@ def main():
         if (communication_round + 1) % args.eval_interval == 0 or communication_round + 1 == args.communication_rounds:
             metrics = server.evaluate()
             metrics["communication_round"] = communication_round + 1
+            metrics["lr"] = clients[0].optimizer.param_groups[0]["lr"]
             s = f"[{communication_round+1}] train_loss_avg: {metrics['train_loss_avg']:.4f}"
             if "val_key_score_avg" in metrics:
                 s += f", val_key_score_avg: {metrics['val_key_score_avg']:.4f}, val_loss_avg: {metrics['val_loss_avg']:.4f}"
